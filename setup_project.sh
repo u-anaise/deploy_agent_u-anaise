@@ -23,7 +23,7 @@ handle_interrupt() {
 		echo "Incomplete directory removed. Workspace is clean."
 	else
 		echo "No directory to clean up."
-	if
+	fi
 	echo "Setup aborted."
 	exit 1
 }
@@ -196,4 +196,15 @@ if [[ "$UPDATE_CHOICE" == "yes" || "$UPDATE_CHOICE" == "y" ]]; then
 	echo "config.json updated -> warning: ${WARNING_VAL}%, failure: ${FAILURE_VAL}%"
 else
 	echo "Keeping defaults -> warning: 75%, failure: 50%."
+fi
+#Environment Validation
+echo "Checking for python3..."
+if command -v python3 &>/dev/null; then
+	PY_VER=$(python3 --version 2>&1)
+	echo "Found: $PY_VER"
+	echo "Environment check passed. Application is ready to run."
+else
+	echo "WARNING: python3 is not installed on this system."
+	echo "WARNING: attendance_checker.py will not run without it."
+	echo "Install with: sudo apt install python3"
 fi
