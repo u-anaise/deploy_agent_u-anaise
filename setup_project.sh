@@ -7,6 +7,28 @@ PROJECT_DIR=""
 MAX_ATTEMPTS=3
 ATTEMPT=0
 
+#Process Management (Signal Trap)
+handle_interrupt() {
+        echo "Interrupt signal caught (SIGINT). Starting cleanup..."
+	if [ -n "$PROJECT_DIR" ] && [ -d "$PROJECT_DIR" ]; then
+		ARCHIVE_NAME="attendance_tracker_${USER_INPUT}_archive"
+		echo "[*] Archiving project state to: ${ARCHIVE_NAME}.tar.gz"
+		tar -czf "${ARCHIVE_NAME}.tar.gz" "$PROJECT_DIR" 2>/dev/null
+		if [ $? -eq 0 ]; then
+			echo "Archive saved: ${ARCHIVE_NAME}.tar.gz"
+		else
+			echo "Archived failed, directory may have been empty."
+		fi
+		rm -rf "$PROJECT_DIR"
+		echo "Incomplete directory removed. Workspace is clean."
+	else
+		echo "No directory to clean up."
+	if
+	echo "Setup aborted."
+	exit 1
+}
+trap handle_interrupt SIGINT
+
 #Get project name from the user
 echo "--------DIRECTORY ARCHITECTURE--------"
 while true; do
