@@ -123,6 +123,7 @@ def run_attendance_check():
 if __name__ == "__main__":
     run_attendance_check()
 PYEOF
+chmod +x "${PROJECT_DIR}/attendance_checker.py"
 echo "Finished writing to attendance_checker.py"
 #----Helpers/assets.csv----
 cat > "${PROJECT_DIR}/Helpers/assets.csv" << 'CSVEOF'
