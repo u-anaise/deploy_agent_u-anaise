@@ -4,12 +4,19 @@
 
 USER_INPUT=""
 PROJECT_DIR=""
+MAX_ATTEMPTS=3
+ATTEMPT=0
 
 #Get project name from the user
 echo "--------DIRECTORY ARCHITECTURE--------"
 while true; do
+	if [ "$ATTEMPT" -ge "$MAX_ATTEMPTS" ]; then
+		echo "Too many invalid attempts. Exiting."
+		exit 1
+	fi
 	read -p "Enter a project tag (e.g. v1): " USER_INPUT
-	if [-z "$USER_INPUT"]; then
+	ATTEMPT=$((ATTEMPT + 1))
+	if [ -z "$USER_INPUT" ]; then
 		echo "Tag cannot be empty. Please try again."
 		continue
 	fi
@@ -100,7 +107,7 @@ bob@example.com,Bob Smith,7,8
 charlie@example.com,Charlie Davis,4,11
 diana@example.com,Diana Prince,15,0
 CSVEOF
-echo "Finished writing to Helpers/assests.csv"
+echo "Finished writing to Helpers/assets.csv"
 #----Helpers/config.json----
 cat > "${PROJECT_DIR}/Helpers/config.json" << 'JSONEOF'
 {
