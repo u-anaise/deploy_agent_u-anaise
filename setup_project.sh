@@ -25,3 +25,19 @@ if [ -d "$PROJECT_DIR" ]; then
     echo "Choose a different tag or remove the existing directory first."
     exit 1
 fi
+
+#Create the project directory architecture
+echo "Creating the project directory architecture"
+mkdir -p "${PROJECT_DIR}/Helpers"
+if [ $? -ne 0 ]; then
+	echo "Failed to create '${PROJECT_DIR}/Helpers'. Check folder permissions."
+	exit 1
+fi
+mkdir -p "${PROJECT_DIR}/reports"
+if [ $? -ne 0 ]; then
+	echo "Failed to create '${PROJECT_DIR}/reports'. Check folder permissions."
+	exit 1
+fi
+echo "Created ${PROJECT_DIR}/ successfully"
+echo "Created ${PROJECT_DIR}/Helpers successfully"
+echo "Created ${PROJECT_DIR}/reports/ successfully"
