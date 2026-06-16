@@ -159,8 +159,8 @@ echo "Finished writing to reports/reports.log"
 echo ""
 echo "--------DYNAMIC CONFIGURATION--------"
 echo "Default thresholds in config.json:"
-echo "   Warning : 75%"
-echo "   Failure : 50%"
+echo "   Warning: 75%"
+echo "   Failure: 50%"
 echo ""
 read -p "Do you want to update the thresholds? (yes/no) [default: no]: " UPDATE_CHOICE
 if [[ "$UPDATE_CHOICE" == "yes" || "$UPDATE_CHOICE" == "y" ]]; then
@@ -221,3 +221,32 @@ else
 	echo "WARNING: attendance_checker.py will not run without it."
 	echo "Install with: sudo apt install python3"
 fi
+#Directory Structure Verification
+echo ""
+echo "Verifying directory structure..."
+MISSING=0
+verify() {
+	if [ -e "$1" ]; then
+		echo "OK  : $1"
+	else
+		echo "Warning! MISS: $1"
+		MISSING=$((MISSING + 1))
+	fi
+}
+verify "${PROJECT_DIR}/attendance_checker.py"
+verify "${PROJECT_DIR}/Helpers/assets.csv"
+verify "${PROJECT_DIR}/Helpers/config.json"
+verify "${PROJECT_DIR}/reports/reports.log"
+echo ""
+if [ "$MISSING" -eq 0 ]; then
+    echo "All files confirmed. Setup complete!"
+    echo ""
+    echo "------------------------------------------------------"
+    echo " Project: $PROJECT_DIR/"
+    echo " To run : cd $PROJECT_DIR && python3 attendance_checker.py"
+    echo "------------------------------------------------------"
+else
+    echo "Warning: $MISSING file(s) missing. Something went wrong."
+    exit 1
+fi
+echo ""
