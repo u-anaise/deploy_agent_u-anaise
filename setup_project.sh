@@ -9,10 +9,11 @@ ATTEMPT=0
 
 #Process Management (Signal Trap)
 handle_interrupt() {
+	echo ""
         echo "Interrupt signal caught (SIGINT). Starting cleanup..."
 	if [ -n "$PROJECT_DIR" ] && [ -d "$PROJECT_DIR" ]; then
 		ARCHIVE_NAME="attendance_tracker_${USER_INPUT}_archive"
-		echo "[*] Archiving project state to: ${ARCHIVE_NAME}.tar.gz"
+		echo "Archiving project state to: ${ARCHIVE_NAME}.tar.gz"
 		tar -czf "${ARCHIVE_NAME}.tar.gz" "$PROJECT_DIR" 2>/dev/null
 		if [ $? -eq 0 ]; then
 			echo "Archive saved: ${ARCHIVE_NAME}.tar.gz"
@@ -30,6 +31,7 @@ handle_interrupt() {
 trap handle_interrupt SIGINT
 
 #Get project name from the user
+echo ""
 echo "--------DIRECTORY ARCHITECTURE--------"
 while true; do
 	if [ "$ATTEMPT" -ge "$MAX_ATTEMPTS" ]; then
@@ -72,6 +74,7 @@ echo "Created ${PROJECT_DIR}/Helpers successfully"
 echo "Created ${PROJECT_DIR}/reports/ successfully"
 
 #Write all required project files
+echo ""
 echo "--------WRITING PROJECT FILES--------"
 #----attendance_checker.py----
 cat > "${PROJECT_DIR}/attendance_checker.py" << 'PYEOF'
@@ -153,6 +156,7 @@ LOGEOF
 echo "Finished writing to reports/reports.log"
 
 #Dynamic Configuration (Stream Editing)
+echo ""
 echo "--------DYNAMIC CONFIGURATION--------"
 echo "Default thresholds in config.json:"
 echo "   Warning : 75%"
@@ -164,8 +168,17 @@ if [[ "$UPDATE_CHOICE" == "yes" || "$UPDATE_CHOICE" == "y" ]]; then
 		local label="$1"
 		local default="$2"
 		local val
+		local attempts=0
+		local max_attempts=3
 		while true; do
+			if [ "$attempts" -ge "$max_attempts" ]; then
+				echo "Too many invalid attempts. Using default: $default" >&2
+				echo "$default"
+				return
+			fi
 			read -p "  $label threshold % (default: $default): " val
+			attempts=$((attempts + 1))
+
 			if [ -z "$val" ]; then
 				echo "No input — using default: $default" >&2
 				echo "$default"
