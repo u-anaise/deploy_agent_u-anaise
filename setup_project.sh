@@ -122,3 +122,38 @@ cat > "${PROJECT_DIR}/reports/reports.log" << 'LOGEOF'
 LOGEOF
 
 echo "Finished writing to reports/reports.log"
+
+#Dynamic Configuration (Stream Editing)
+echo "--------DYNAMIC CONFIGURATION--------"
+echo "Default thresholds in config.json:"
+echo "   Warning : 75%"
+echo "   Failure : 50%"
+echo ""
+read -p "Do you want to update the thresholds? (yes/no) [default: no]: " UPDATE_CHOICE
+if [[ "$UPDATE_CHOICE" == "yes" || "$UPDATE_CHOICE" == "y" ]]; then
+	read_threshold() {
+		local label="$1"
+		local default="$2"
+		local val
+		while true; do
+			read -p "  $label threshold % (default: $default): " val
+			if [ -z "$val" ]; then
+				echo "[*] No input — using default: $default" >&2
+				echo "$default"
+				return
+			fi
+			if ! [[ "$val" =~ ^[0-9]+$ ]]; then
+				echo "[!] '$val' is not valid. Enter digits only, e.g. 75" >&2
+				continue
+			fi
+			if [ "$val" -lt 1 ] || [ "$val" -gt 99 ]; then
+				echo "[!] Value must be between 1 and 99." >&2
+				continue
+			fi
+			echo "$val"
+			return
+		done
+	}
+	WARNING_VAL=$(read_threshold "Warning" "75")
+	FAILURE_VAL=$(read_threshold "Failure" "50")
+	
