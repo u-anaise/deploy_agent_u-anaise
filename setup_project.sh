@@ -138,16 +138,16 @@ if [[ "$UPDATE_CHOICE" == "yes" || "$UPDATE_CHOICE" == "y" ]]; then
 		while true; do
 			read -p "  $label threshold % (default: $default): " val
 			if [ -z "$val" ]; then
-				echo "[*] No input — using default: $default" >&2
+				echo "No input — using default: $default" >&2
 				echo "$default"
 				return
 			fi
 			if ! [[ "$val" =~ ^[0-9]+$ ]]; then
-				echo "[!] '$val' is not valid. Enter digits only, e.g. 75" >&2
+				echo "Warning: '$val' is not valid. Enter digits only, e.g. 75" >&2
 				continue
 			fi
 			if [ "$val" -lt 1 ] || [ "$val" -gt 99 ]; then
-				echo "[!] Value must be between 1 and 99." >&2
+				echo "Warning: Value must be between 1 and 99." >&2
 				continue
 			fi
 			echo "$val"
@@ -156,4 +156,15 @@ if [[ "$UPDATE_CHOICE" == "yes" || "$UPDATE_CHOICE" == "y" ]]; then
 	}
 	WARNING_VAL=$(read_threshold "Warning" "75")
 	FAILURE_VAL=$(read_threshold "Failure" "50")
-	
+	if [ "$FAILURE_VAL" -ge "$WARNING_VAL" ]; then
+		echo "Warning: Conflict: Failure ($FAILURE_VAL%) must be lower than Warning ($WARNING_VAL%)."
+        	echo "Warning: Reverting to defaults (warning=75, failure=50)."
+        	WARNING_VAL=75
+        	FAILURE_VAL=50
+    	fi
+	sed -i "s/\"warning\": [0-9]*/\"warning\": ${WARNING_VAL}/" "${PROJECT_DIR}/Helpers/config.json"
+	sed -i "s/\"failure\": [0-9]*/\"failure\": ${FAILURE_VAL}/" "${PROJECT_DIR}/Helpers/config.json"
+	echo "config.json updated -> warning: ${WARNING_VAL}%, failure: ${FAILURE_VAL}%"
+else
+	echo "Keeping defaults -> warning: 75%, failure: 50%."
+fi
