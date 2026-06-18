@@ -1,7 +1,7 @@
 # deploy_agent_u-anaise
 
 ## Video Walkthrough 
-[Click here to watch the walkthrough video]
+[Click here to watch the walkthrough video](https://drive.google.com/file/d/1v3wUW5gciWTCDousWZalprr4t0CfxElS/view?usp=sharing)
 
 `setup_project.sh` is a shell script that sets up the Student Attendance Tracker workspace automatically. It creates the required directories, writes all source files, lets you configure thresholds, validates your Python installation, and handles interruptions.
 
